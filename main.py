@@ -65,7 +65,7 @@ class VisualElement(Frame):
 def scrambleElements(arr, argRoot):
     min_idx = 0
     for i in range(len(arr)):
-        min_idx = random.randint(1, len(arr)-1)
+        min_idx = random.randint(1, len(arr) - 1)
         # swap the graphical representations
         tempX = arr[i][2].targetX
         tempY = arr[i][2].targetY
@@ -77,7 +77,7 @@ def scrambleElements(arr, argRoot):
             argRoot.update()
 
 
-def insertSort(arr, argRoot):
+def selectionSort(arr, argRoot):
     for i in range(len(arr)):
         min_idx = i
         for j in range(i + 1, len(arr)):
@@ -111,7 +111,27 @@ def bubbleSort(arr, argRoot):
                 arr[i], arr[i + 1] = arr[i + 1], arr[i]
                 while not arr[i][2].move() and not arr[i + 1][2].move():
                     argRoot.update()
-    return True
+    return sorted
+
+
+def recursiveInsertionSort(arr, n, argRoot):
+    if n <= 1:
+        return
+    recursiveInsertionSort(arr, n-1, argRoot)
+    j = n - 2
+    last = arr[n - 1]
+    while j >= 0 and arr[j][1] > last[1]:
+        # swap the graphical representations
+        tempX = arr[j][2].targetX
+        tempY = arr[j][2].targetY
+        arr[j][2].setMoveTarget(last[2].targetX, last[2].targetY)
+        last[2].setMoveTarget(tempX, tempY)
+        # swap the values
+        while not arr[j][2].move() and not last[2].move():
+            argRoot.update()
+        arr[j + 1] = arr[j]
+        j -= 1
+    arr[j + 1] = last
 
 
 def main():
@@ -146,9 +166,11 @@ def main():
         if keyboard.is_pressed("esc"):
             exitApplication = True
         if keyboard.is_pressed("e"):
+            recursiveInsertionSort(elements, len(elements), root)
+            scrambleElements(elements, root)
             bubbleSort(elements, root)
             scrambleElements(elements, root)
-            insertSort(elements, root)
+            selectionSort(elements, root)
         # process movement
         # for obj in animatedObjects:
         # obj.move()
