@@ -52,8 +52,7 @@ class VisualElement(Frame):
         h = self.posY + self.relH
         logging.debug("Interpolation: " + str(self.posX) + ", " + str(self.posY))
         self.canvas.coords(self.myShape, self.posX, self.posY, w, h)
-        if int(math.floor(self.posX)) == int(math.floor(self.targetX)) and int(math.floor(self.posY)) == int(math.floor(self.targetY)):
-            #self.canvas.coords(self.myShape, int(math.floor(self.posX)), int(math.floor(self.posY)), int(math.floor(w)), int(math.floor(h)))
+        if abs(self.posX - self.targetX) < 0.05 and abs(self.posY - self.targetY) < 0.05:
             return True
         return False
 
@@ -77,9 +76,9 @@ def insertSort(arr, argRoot):
         arr[min_idx][2].setMoveTarget(tempX, tempY)
         # swap the smallest value to the beginning of the array, and put the bigger value where the smaller was at
         arr[i], arr[min_idx] = arr[min_idx], arr[i]
-
         while not arr[i][2].move() and not arr[min_idx][2].move():
             argRoot.update()
+    return "Done"
 
 def main():
     # "globals"
@@ -113,7 +112,7 @@ def main():
         if keyboard.is_pressed("esc"):
             exitApplication = True
         if keyboard.is_pressed("e"):
-            insertSort(elements, root)
+            print(insertSort(elements, root))
         # process movement
         # for obj in animatedObjects:
         # obj.move()
