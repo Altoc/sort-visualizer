@@ -1,13 +1,11 @@
 import os
 import logging
 import keyboard
-import numpy as np
+import time
 import tkinter
 from tkinter import Canvas, Frame, BOTH
 
 
-# of course there is a create_rectangle function in tkinter
-# and of course it doesnt come up in google if you search for squares...
 class VisualElement(Frame):
     myShape = 0
     canvas = 0
@@ -18,7 +16,7 @@ class VisualElement(Frame):
     relH = 0
     targetX = 0
     targetY = 0
-    speed = 0.01
+    speed = 0.001
 
     def __init__(self, argCanvas):
         super().__init__()
@@ -28,7 +26,6 @@ class VisualElement(Frame):
 
     def initUI(self, canvas):
         self.master.title("Square")
-        self.pack(fill=BOTH, expand=1)
 
     def setShape(self, x, y, w, h, fillColor, outlineColor):
         self.posX = x
@@ -37,8 +34,8 @@ class VisualElement(Frame):
         self.relH = h
         self.targetX = self.posX
         self.targetY = self.posY
-        self.myShape = self.canvas.create_rectangle(self.posX, self.posY, self.posX + self.relW, self.posY + self.relH, fill=fillColor, outline=outlineColor)
-        self.canvas.pack(fill=BOTH, expand=1)
+        self.myShape = self.canvas.create_rectangle(self.posX, self.posY, self.posX + self.relW, self.posY + self.relH,
+                                                    fill=fillColor, outline=outlineColor)
 
     def setMoveTarget(self, argX, argY):
         self.targetX = argX
@@ -53,6 +50,9 @@ class VisualElement(Frame):
         h = self.posY + self.relH
         logging.debug("Interpolation: " + str(self.posX) + ", " + str(self.posY))
         self.canvas.coords(self.myShape, self.posX, self.posY, w, h)
+        if int(self.posX) == int(self.targetX) and int(self.posY) == int(self.targetY):
+            return True
+        return False
 
     def animate(self):
         return
@@ -61,45 +61,70 @@ class VisualElement(Frame):
         # self.canvas.itemconfig(self.myShape, fill="green")
 
 
+def insertSort(arr, argRoot):
+    for i in range(len(arr)):
+        min_idx = i
+        for j in range(i + 1, len(arr)):
+            if arr[min_idx][1] > arr[j][1]:
+                min_idx = j
+        # swap the graphical representations
+        tempX = arr[i][2].targetX
+        tempY = arr[i][2].targetY
+        arr[i][2].setMoveTarget(arr[min_idx][2].targetX, arr[min_idx][2].targetY)
+        arr[min_idx][2].setMoveTarget(tempX, tempY)
+        # swap the smallest value to the beginning of the array, and put the bigger value where the smaller was at
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+
+        while not arr[i][2].move() and not arr[min_idx][2].move():
+            argRoot.update()
+
+
 def main():
     # "globals"
     animatedObjects = []
     # set up logging info
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.WARNING)
     logging.info("Starting Application")
     root = tkinter.Tk()
-    # root.geometry("1040x720+300+300")
-    root.attributes("-fullscreen", True)
+    root.geometry("1040x720+400+100")
+    # root.attributes("-fullscreen", True)
     logging.info("Adding widgets")
-    canvas = Canvas(root)
-    #Debug array of elements
+    canvas = Canvas(bg="Cyan")
+    canvas.pack(fill=BOTH, expand=True)
+    # Debug array of elements
     elements = []
     values = [50, 14, 58, 26, 84, 26, 95, 16, 37, 46]
     xPos = 100
-    yPos = 250
+    yPos = 720
     for i in range(values.__len__()):
         newElement = (i, values[i], VisualElement(canvas))
         newElement[2].setShape(xPos, yPos, 10, newElement[1] * -1, "blue", "black")
         elements.append(newElement)
         xPos += 12
         animatedObjects.append(elements[i][2])
-    canvas.pack(fill=BOTH, expand=1)
+
+    ###--- SORT HERE ---###
+    # insertSort(elements)
+
+    ###--- SORT END ---###
+
     exitApplication = False
-    #process loop
+    # process loop
     while not exitApplication:
         # process input
         if keyboard.is_pressed("esc"):
             exitApplication = True
         if keyboard.is_pressed("e"):
-            for obj in animatedObjects:
-                obj.setMoveTarget(1000, 200)
+            insertSort(elements, root)
         # process movement
-        for obj in animatedObjects:
-            obj.move()
+        # for obj in animatedObjects:
+        # obj.move()
+        # obj.animate()
         # process animations
-        for obj in animatedObjects:
-            obj.animate()
+        # for obj in animatedObjects:
+        # obj.animate()
         # update window
+        root.update_idletasks()
         root.update()
     logging.info("Application exiting")
 
