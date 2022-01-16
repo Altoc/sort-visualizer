@@ -27,7 +27,7 @@ class VisualElement(Frame):
         self.initUI(self.canvas)
 
     def initUI(self, canvas):
-        self.master.title("Square")
+        self.master.title("Visual Element")
 
     def setShape(self, x, y, w, h, fillColor, outlineColor):
         self.posX = x
@@ -53,14 +53,13 @@ class VisualElement(Frame):
         logging.debug("Interpolation: " + str(self.posX) + ", " + str(self.posY))
         self.canvas.coords(self.myShape, self.posX, self.posY, w, h)
         if abs(self.posX - self.targetX) < 0.05 and abs(self.posY - self.targetY) < 0.05:
+            self.animate()
             return True
         return False
 
     def animate(self):
-        return
-        # move an object
         # change an object's fill color
-        # self.canvas.itemconfig(self.myShape, fill="green")
+        self.canvas.itemconfig(self.myShape, fill="green")
 
 
 def insertSort(arr, argRoot):
