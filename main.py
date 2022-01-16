@@ -2,6 +2,8 @@ import os
 import logging
 import keyboard
 import time
+import math
+import random
 import tkinter
 from tkinter import Canvas, Frame, BOTH
 
@@ -16,7 +18,7 @@ class VisualElement(Frame):
     relH = 0
     targetX = 0
     targetY = 0
-    speed = 0.001
+    speed = 0.1
 
     def __init__(self, argCanvas):
         super().__init__()
@@ -50,7 +52,8 @@ class VisualElement(Frame):
         h = self.posY + self.relH
         logging.debug("Interpolation: " + str(self.posX) + ", " + str(self.posY))
         self.canvas.coords(self.myShape, self.posX, self.posY, w, h)
-        if int(self.posX) == int(self.targetX) and int(self.posY) == int(self.targetY):
+        if int(math.floor(self.posX)) == int(math.floor(self.targetX)) and int(math.floor(self.posY)) == int(math.floor(self.targetY)):
+            #self.canvas.coords(self.myShape, int(math.floor(self.posX)), int(math.floor(self.posY)), int(math.floor(w)), int(math.floor(h)))
             return True
         return False
 
@@ -78,7 +81,6 @@ def insertSort(arr, argRoot):
         while not arr[i][2].move() and not arr[min_idx][2].move():
             argRoot.update()
 
-
 def main():
     # "globals"
     animatedObjects = []
@@ -93,8 +95,10 @@ def main():
     canvas.pack(fill=BOTH, expand=True)
     # Debug array of elements
     elements = []
-    values = [50, 14, 58, 26, 84, 26, 95, 16, 37, 46]
-    xPos = 100
+    values = []
+    for i in range(0, 89):
+        values.append(random.randint(1, 700))
+    xPos = 1
     yPos = 720
     for i in range(values.__len__()):
         newElement = (i, values[i], VisualElement(canvas))
@@ -102,12 +106,6 @@ def main():
         elements.append(newElement)
         xPos += 12
         animatedObjects.append(elements[i][2])
-
-    ###--- SORT HERE ---###
-    # insertSort(elements)
-
-    ###--- SORT END ---###
-
     exitApplication = False
     # process loop
     while not exitApplication:
