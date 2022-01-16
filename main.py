@@ -7,7 +7,6 @@ import random
 import tkinter
 from tkinter import Canvas, Frame, BOTH
 
-
 class VisualElement(Frame):
     myShape = 0
     canvas = 0
@@ -27,7 +26,7 @@ class VisualElement(Frame):
         self.initUI(self.canvas)
 
     def initUI(self, canvas):
-        self.master.title("Visual Element")
+        self.master.title("Sort Algorithm Visualizer")
 
     def setShape(self, x, y, w, h, fillColor, outlineColor):
         self.posX = x
@@ -158,6 +157,7 @@ def main():
     # pack label
     labelStr = tkinter.StringVar()
     label = tkinter.Label(root, textvariable=labelStr)
+    labelStr.set("Press 'E' to begin.")
     label.pack()
     # pack canvas
     canvas = Canvas(root, bg="Cyan")
