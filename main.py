@@ -197,6 +197,9 @@ def main():
             scrambleElements(elements, root)
             labelStr.set("Quick Sort")
             quickSort(elements, 0, len(elements) - 1, root)
+            labelStr.set("Scrambling Array...")
+            scrambleElements(elements, root)
+            labelStr.set("Press 'E' to begin.")
         # process movement
         # for obj in animatedObjects:
         # obj.move()
